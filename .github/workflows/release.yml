@@ -1,0 +1,119 @@
+name: Release Hey Woo
+
+# Produce the distributable Hey Woo plugin zip and publish it as a GitHub
+# Release. The version input must match the WordPress plugin header in
+# hey-woo.php.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version, e.g. 0.4.2 (must match the plugin header)'
+        required: true
+        type: string
+      draft:
+        description: 'Create the Release as a draft'
+        type: boolean
+        default: true
+      prerelease:
+        description: 'Mark the Release as a pre-release'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Validate version input matches plugin header
+        run: |
+          INPUT_VERSION="${{ inputs.version }}"
+          INPUT_VERSION="${INPUT_VERSION#v}"
+
+          HEADER_VERSION="$(awk '/^ \* Version:/ { print $3; exit }' hey-woo.php)"
+          if [[ -z "${HEADER_VERSION}" ]]; then
+            echo "ERROR: could not read Version header from hey-woo.php" >&2
+            exit 1
+          fi
+
+          if [[ "${INPUT_VERSION}" != "${HEADER_VERSION}" ]]; then
+            echo "ERROR: input version '${INPUT_VERSION}' does not match hey-woo.php's Version header ('${HEADER_VERSION}')." >&2
+            echo "       Bump the plugin header on a PR first, merge it, then re-run this workflow." >&2
+            exit 1
+          fi
+
+          echo "VERSION=${INPUT_VERSION}" >> "$GITHUB_ENV"
+          echo "TAG_NAME=v${INPUT_VERSION}" >> "$GITHUB_ENV"
+
+      - name: Verify tag does not already exist
+        run: |
+          if git rev-parse -q --verify "refs/tags/${TAG_NAME}" > /dev/null 2>&1; then
+            echo "ERROR: tag ${TAG_NAME} already exists locally in this checkout" >&2
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "${TAG_NAME}" > /dev/null 2>&1; then
+            echo "ERROR: tag ${TAG_NAME} already exists on origin" >&2
+            echo "       Either bump the version or delete the existing tag." >&2
+            exit 1
+          fi
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10.33.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Composer dependencies
+        run: composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
+
+      - name: Build plugin zip
+        run: pnpm run plugin-zip
+
+      - name: Verify plugin zip
+        run: |
+          if [ ! -f hey-woo.zip ]; then
+            echo "ERROR: hey-woo.zip not found" >&2
+            exit 1
+          fi
+          unzip -t hey-woo.zip
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: hey-woo-${{ env.VERSION }}
+          path: hey-woo.zip
+          retention-days: 30
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: ${{ env.TAG_NAME }}
+          target_commitish: ${{ github.sha }}
+          files: hey-woo.zip
+          generate_release_notes: true
+          draft: ${{ inputs.draft }}
+          prerelease: ${{ inputs.prerelease }}
