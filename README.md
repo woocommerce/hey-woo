@@ -35,3 +35,6 @@ workflow rebuild them.
 ## Releases
 
 Hey Woo releases are built from this repository. See [RELEASING.md](./RELEASING.md).
+
+If a change starts in the WooCommerce for Claude monorepo, follow
+[SYNCING.md](./SYNCING.md) before releasing it here.
