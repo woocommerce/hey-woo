@@ -41,6 +41,8 @@ pnpm install
 composer install
 pnpm run start
 pnpm run lint:php
+composer run phpcs
+pnpm exec wp-env run tests-cli --env-cwd=wp-content/plugins/hey-woo -- php vendor/bin/phpunit --colors=always
 pnpm run plugin-zip
 unzip -t hey-woo.zip
 ```

@@ -7,6 +7,84 @@ on:
       - trunk
 
 jobs:
+  phpcs:
+    name: PHPCS (WordPress + Docs)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer:v2
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/composer
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.json', 'composer.lock', 'php-packages/*/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --no-interaction
+
+      - name: Run PHPCS
+        run: composer run phpcs
+
+  phpunit:
+    name: PHPUnit (integration)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 10.33.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer:v2
+          coverage: none
+
+      - name: Cache Composer
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/composer
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.json', 'composer.lock', 'php-packages/*/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --no-interaction
+
+      - name: Start wp-env
+        run: pnpm exec wp-env start
+
+      - name: Run PHPUnit
+        run: pnpm exec wp-env run tests-cli --env-cwd=wp-content/plugins/hey-woo -- php vendor/bin/phpunit --colors=always
+
+      - name: Stop wp-env
+        if: always()
+        run: pnpm exec wp-env stop
+
   package:
     name: Package Smoke
     runs-on: ubuntu-latest
@@ -41,7 +119,7 @@ jobs:
         run: composer validate --strict
 
       - name: Install Composer dependencies
-        run: composer install --no-progress --prefer-dist --no-interaction
+        run: composer install --no-dev --no-progress --prefer-dist --no-interaction
 
       - name: Lint PHP
         run: pnpm run lint:php
