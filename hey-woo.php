@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Hey Woo
- * Plugin URI: https://woocommerce.com/
- * Description: Bring-your-own-key WooCommerce assistant scaffold powered by shared commerce abilities.
+ * Plugin URI: https://github.com/woocommerce/hey-woo
+ * Description: Bring-your-own-key WooCommerce assistant for WordPress admin.
  * Version: 0.4.2
  * Author: Automattic
  * Author URI: https://automattic.com/
