@@ -14,6 +14,8 @@ tool bridge; otherwise the admin chat runs with the shared analytics tools.
 
 ## Development
 
+Read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a PR.
+
 ```bash
 pnpm install
 composer install
