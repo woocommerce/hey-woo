@@ -1,0 +1,82 @@
+name: Bug report
+description: Report a reproducible problem with Hey Woo.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. Please do not include API keys, customer data, order exports, or other secrets.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: List the exact steps needed to see the problem.
+      placeholder: |
+        1. Go to WooCommerce > Settings > Hey Woo.
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What happened instead?
+    validations:
+      required: true
+  - type: input
+    id: hey_woo_version
+    attributes:
+      label: Hey Woo version
+      placeholder: "0.4.2"
+    validations:
+      required: true
+  - type: input
+    id: wordpress_version
+    attributes:
+      label: WordPress version
+      placeholder: "6.9"
+    validations:
+      required: true
+  - type: input
+    id: woocommerce_version
+    attributes:
+      label: WooCommerce version
+      placeholder: "10.7"
+    validations:
+      required: true
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - Other
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs or screenshots
+      description: Redact API keys, customer data, order details, and any other private information.
+      render: shell
+    validations:
+      required: false

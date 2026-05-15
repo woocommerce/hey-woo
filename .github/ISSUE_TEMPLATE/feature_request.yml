@@ -1,0 +1,51 @@
+name: Feature request
+description: Suggest an improvement for Hey Woo.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tell us about the merchant problem first. Please do not include API keys, customer data, order exports, or other secrets.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Merchant problem
+      description: What merchant-facing problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: What should be true after this change ships?
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Current workflow
+      description: How do merchants handle this today?
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Product area
+      options:
+        - Ask Claude chat
+        - BYOK settings
+        - Analytics tools
+        - Workflow skills
+        - Packaging or release
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else that helps explain the request?
+    validations:
+      required: false
