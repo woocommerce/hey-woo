@@ -31,3 +31,7 @@ installs it into `vendor/woocommerce/commerce-abilities`, and
 
 Do not commit `vendor/`, `build/`, or `hey-woo.zip`; CI and the release
 workflow rebuild them.
+
+## Releases
+
+Hey Woo releases are built from this repository. See [RELEASING.md](./RELEASING.md).
