@@ -25,7 +25,7 @@ the release checklist.
 
 4. Open and merge the version-bump PR.
 5. In GitHub Actions, run **Release Hey Woo** from `trunk`.
-6. Enter the version without the `v` prefix, for example `0.4.2`.
+6. Enter the version without the `v` prefix, for example `0.1.0`.
 7. Keep the release as a draft until the generated notes and attached
    `hey-woo.zip` are reviewed.
 
