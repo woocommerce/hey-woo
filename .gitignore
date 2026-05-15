@@ -1,0 +1,27 @@
+node_modules/
+
+# pnpm is the project package manager; keep stray npm locks out.
+package-lock.json
+
+# Build and release artefacts.
+build/
+packages/*/build-module/
+*.zip
+.wp-env/
+.wp-env.override.json
+*.log
+.DS_Store
+
+# Composer dependencies and PHPUnit cache.
+vendor/
+php-packages/*/vendor/
+.phpunit.cache/
+.phpunit.result.cache
+
+# Local credentials and Claude config.
+.mcp.json
+.claude/
+.agent-workflow-runs/
+
+# Local-only dev plugins/tools.
+vendor-plugins/
