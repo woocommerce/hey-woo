@@ -3,6 +3,10 @@
 Hey Woo releases are built and published from this repository. Do not publish
 `hey-woo.zip` from the WooCommerce for Claude monorepo.
 
+If release-bound code changed first in the WooCommerce for Claude monorepo,
+sync it into this repository using [SYNCING.md](./SYNCING.md) before starting
+the release checklist.
+
 ## Release Checklist
 
 1. Merge all release-bound PRs to `trunk`.
